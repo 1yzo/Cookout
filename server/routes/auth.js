@@ -20,7 +20,7 @@ router.post('/signup', (req, res) => {
         .catch((err) => res.status(500).send(err));
 });
 
-router.post('/authenticate', (req, res) => {
+router.post('/login', (req, res) => {
     const { userName, password } = req.body;
 
     User.findOne({ userName })
@@ -41,8 +41,9 @@ router.post('/authenticate', (req, res) => {
         .catch((err) => res.status(500).send(err));
 });
 
+// Example of a protected route
 router.get('/testing', passport.authenticate('jwt', { session: false }), (req, res) => {
-    res.json(`Welcome to private ${req.user.userName}`);
+    res.json(`Welcome to private area, ${req.user.userName}`);
 });
 
 module.exports = router;

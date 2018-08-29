@@ -1,0 +1,23 @@
+.login-modal__overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.568);
+}
+
+.login-modal {
+    width: 30rem;
+    background: white;
+    padding: 3rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    /* max-width: 30rem; */
+}
