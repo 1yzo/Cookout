@@ -7,12 +7,12 @@ export const removeAuthToken = () => ({
     type: 'REMOVE_AUTH_TOKEN'
 });
 
-export const startSignup = (email, password) => {
+export const startSignup = (email, password, name) => {
     return (dispatch) => {
         return fetch('/auth/signup', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ userName: email, password })
+            body: JSON.stringify({ userName: email, password, name })
         })
             .then((res) => {
                 if (res.status === 200) {

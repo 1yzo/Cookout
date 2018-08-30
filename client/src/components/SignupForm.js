@@ -4,6 +4,7 @@ import { startSignup } from '../actions/auth';
 
 class SignupForm extends React.Component {
     state = {
+        name: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -19,8 +20,8 @@ class SignupForm extends React.Component {
     
     handleSubmit = (e) => {
         e.preventDefault();
-        const { email, password } = this.state;
-        this.props.signup(email, password)
+        const { email, password, confirmPassword, name } = this.state;
+        this.props.signup(email, password, name)
             .then(() => {
                 if (!this.props.error) {
                     this.setState({
@@ -41,6 +42,12 @@ class SignupForm extends React.Component {
     render() {
         return (
             <form className="login-form" onSubmit={this.handleSubmit}>
+                <label>Name</label> 
+                <input
+                    id="name"
+                    type="text"
+                    onChange={this.handleChange}
+                />
                 <label>Email</label> 
                 <input
                     id="email"
@@ -72,7 +79,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    signup: (email, password) => dispatch(startSignup(email, password))
+    signup: (email, password, name) => dispatch(startSignup(email, password, name))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignupForm);

@@ -4,7 +4,11 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
     userName: { type: String, unique: true, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    name: String,
+    bookings: [ String ],
+    saved: [ String ],
+    listings: [ String ]
 });
 
 userSchema.pre('save', function(next) {

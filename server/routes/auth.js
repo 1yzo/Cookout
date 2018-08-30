@@ -8,11 +8,12 @@ require('../mongo').connect();
 const secrets = require('../secrets');
 
 router.post('/signup', (req, res) => {
-    const { userName, password } = req.body;
+    const { userName, password, name } = req.body;
 
     const user = new User({
         userName,
-        password
+        password,
+        name
     });
 
     user.save()
