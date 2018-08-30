@@ -8,7 +8,8 @@ class SignupForm extends React.Component {
         email: '',
         password: '',
         confirmPassword: '',
-        error: ''
+        error: '',
+        passwordMatchError: ''
     };
 
     handleChange = (e) => {
@@ -21,18 +22,24 @@ class SignupForm extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         const { email, password, confirmPassword, name } = this.state;
-        this.props.signup(email, password, name)
-            .then(() => {
-                if (!this.props.error) {
-                    this.setState({
-                        email: '',
-                        password: '',
-                        confirmPassword: '',
-                        error: ''
-                    });
-                    this.props.closeModal();
-                } 
-            });
+        if (password === confirmPassword) {
+            this.setState(() => ({ passwordMatchError: '' }));
+            this.props.signup(email, password, name)
+                .then(() => {
+                    if (!this.props.error) {
+                        this.setState({
+                            email: '',
+                            password: '',
+                            confirmPassword: '',
+                            error: '',
+                            passwordMatchError: ''
+                        });
+                        this.props.closeModal();
+                    } 
+                });
+        } else {
+            this.setState(() => ({ passwordMatchError: 'Passwords do not match' }));
+        }
     }
 
     changeFormType = () => {
@@ -40,6 +47,8 @@ class SignupForm extends React.Component {
     }
     
     render() {
+        const { error } = this.props;
+        const { passwordMatchError } = this.state;
         return (
             <form className="login-form" onSubmit={this.handleSubmit}>
                 <label>Name</label> 
@@ -68,7 +77,8 @@ class SignupForm extends React.Component {
                 />
                 <button>Sign Up</button>
                 <div onClick={this.changeFormType}>Already have an account?</div>
-                {this.props.error && <div className="login-form__error">{this.props.error}</div>}
+                {passwordMatchError && <div>{passwordMatchError}</div>}
+                {error && <div className="login-form__error">{error}</div>}
             </form>
         );
     }
