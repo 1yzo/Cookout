@@ -6,7 +6,8 @@ class SignupForm extends React.Component {
     state = {
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        error: ''
     };
 
     handleChange = (e) => {
@@ -19,13 +20,28 @@ class SignupForm extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         const { email, password } = this.state;
-        this.props.signup(email, password);
+        this.props.signup(email, password)
+            .then(() => {
+                if (!this.props.error) {
+                    this.setState({
+                        email: '',
+                        password: '',
+                        confirmPassword: '',
+                        error: ''
+                    });
+                    this.props.closeModal();
+                } 
+            });
     }
 
+    changeFormType = () => {
+        this.props.setFormType('login');
+    }
+    
     render() {
         return (
             <form className="login-form" onSubmit={this.handleSubmit}>
-                <label>Email</label>
+                <label>Email</label> 
                 <input
                     id="email"
                     type="text"
@@ -44,13 +60,19 @@ class SignupForm extends React.Component {
                     onChange={this.handleChange}
                 />
                 <button>Sign Up</button>
+                <div onClick={this.changeFormType}>Already have an account?</div>
+                {this.props.error && <div className="login-form__error">{this.props.error}</div>}
             </form>
         );
     }
 }
 
+const mapStateToProps = (state) => ({
+    error: state.auth.error
+});
+
 const mapDispatchToProps = (dispatch) => ({
     signup: (email, password) => dispatch(startSignup(email, password))
 });
 
-export default connect(null, mapDispatchToProps)(SignupForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SignupForm);

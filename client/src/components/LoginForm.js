@@ -5,7 +5,8 @@ import { startLogin } from '../actions/auth';
 class LoginForm extends React.Component {
     state = {
         email: '',
-        password: ''
+        password: '',
+        error: ''
     };
 
     handleChange = (e) => {
@@ -18,7 +19,17 @@ class LoginForm extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         const { email, password } = this.state;
-        this.props.login(email, password);
+        this.props.login(email, password)
+            .then(() => {
+                if (!this.props.error) {
+                    this.setState({
+                        email: '',
+                        password: '',
+                        error: ''
+                    });
+                    this.props.closeModal();
+                }
+            });
     }
 
     changeFormType = () => {
@@ -44,13 +55,18 @@ class LoginForm extends React.Component {
                     />
                     <button type="submit">Login</button>
                     <div onClick={this.changeFormType}>Create An Account</div>
+                    {this.props.error && <div className="login-form__error">{this.props.error}</div>}
                 </form>
         );
     }
 }
 
+const mapStateToProps = (state) => ({
+    error: state.auth.error
+});
+
 const mapDispatchToProps = (dispatch) => ({
     login: (email, password) => dispatch(startLogin(email, password))
 });
 
-export default connect(null, mapDispatchToProps)(LoginForm);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

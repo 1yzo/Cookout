@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Modal from 'react-modal';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
@@ -24,7 +23,10 @@ class LoginModal extends React.Component {
                 ariaHideApp={false}
                 onRequestClose={this.props.closeModal}
             >
-                {this.state.formType === 'login' ? <LoginForm setFormType={this.setFormType}/> : <SignupForm />}
+                {this.state.formType === 'login' ? 
+                    <LoginForm setFormType={this.setFormType} closeModal={this.props.closeModal}/>
+                        :
+                    <SignupForm setFormType={this.setFormType} closeModal={this.props.closeModal} />}
             </Modal>
         );
     }
