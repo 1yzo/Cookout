@@ -3,11 +3,13 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
 import authReducer from '../reducers/auth';
+import userReducer from '../reducers/user';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    user: userReducer
 });
 
 const persistConfig = {
