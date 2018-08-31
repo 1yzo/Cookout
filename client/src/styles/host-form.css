@@ -1,0 +1,16 @@
+.badges-container {
+    margin-top: 2rem;
+    display: flex;
+}
+
+.badge {
+    margin-right: 8rem;
+    cursor: pointer;
+    padding: 1rem;
+    background: rgb(187, 187, 187);
+    color: rgb(146, 146, 146);
+}
+
+.badge--active {
+    color: black;
+}

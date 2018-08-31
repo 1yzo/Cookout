@@ -23,7 +23,7 @@ class Header extends React.Component {
         const { isLoggedIn } = this.props;
         return (
             <div className="header">
-                <h1>Cookout</h1>
+                <Link to="/"><h1>Cookout</h1></Link>
                 <div className="header__link-container">
                     <Link to="/host">Host</Link>
                     {!isLoggedIn && <a onClick={this.handleLoginClick}>Login</a>}

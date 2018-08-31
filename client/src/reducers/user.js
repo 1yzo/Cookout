@@ -1,4 +1,11 @@
-const defaultState = {};
+const defaultState = {
+    _id: '',
+    userName: '',
+    password: '',
+    bookings: [],
+    saved: [],
+    listings: []
+};
 
 export default (state = defaultState, action) => {
     switch (action.type) {

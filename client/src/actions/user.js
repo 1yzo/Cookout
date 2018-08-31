@@ -11,6 +11,7 @@ export const startSetUser = () => {
             headers: { 'Authorization': token }
         })
             .then((res) => res.json())
-            .then((user) => dispatch(setUser(user)));
+            .then((user) => dispatch(setUser(user)))
+            .catch((err) => console.log(err));
     };
 };

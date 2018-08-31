@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import LandingPage from '../components/LandingPage';
 import Header from '../components/Header';
 import HostPage from '../components/HostPage';
+import HostFormPage from '../components/HostFormPage';
 import { startSetUser } from '../actions/user';
 
 class AppRouter extends React.Component {
@@ -22,6 +23,7 @@ class AppRouter extends React.Component {
                     <Switch>
                         <Route path="/" component={LandingPage} exact />
                         <Route path="/host" component={HostPage} />
+                        <Route path="/host-form" component={HostFormPage} />
                     </Switch>
                 </div>
             </BrowserRouter>
