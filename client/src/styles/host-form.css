@@ -1,5 +1,6 @@
 .badges-container {
     margin-top: 2rem;
+    margin-bottom: 5rem;
     display: flex;
 }
 
@@ -13,4 +14,29 @@
 
 .badge--active {
     color: black;
+}
+
+#imageInput {
+    width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 250px;
+    font-size: 5rem;
+    background: #eee;
+    cursor: pointer;
+}
+
+.image-container img {
+    width: 250px;
+    height: 250px;
 }

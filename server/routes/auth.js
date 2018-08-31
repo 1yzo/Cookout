@@ -43,8 +43,9 @@ router.post('/login', (req, res) => {
 });
 
 // Example of a protected route
-router.get('/testing', passport.authenticate('jwt', { session: false }), (req, res) => {
-    res.json(`Welcome to private area, ${req.user.userName}`);
+// Requires { Authorization: 'JWT token' } in headers
+router.get('/getUser', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.json(req.user);
 });
 
 module.exports = router;

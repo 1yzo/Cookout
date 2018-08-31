@@ -6,8 +6,8 @@ import '../styles/host-form.css';
 class HostFormPage extends React.Component {
     state = {
         badges: [],
-        image: '',
-        location: '',
+        image: undefined,
+        address: '',
         price: '',
         occupancy: undefined,
         subImages: []
@@ -22,6 +22,15 @@ class HostFormPage extends React.Component {
             this.setState((prevState) => ({ badges: prevState.badges.filter((badgeName) => badgeName !== badge) }));
         }
     }
+
+    handleImageChange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            this.setState(() => ({ image: reader.result }));
+        }
+        reader.readAsDataURL(file);
+    }
     
     render() {
         return (
@@ -34,7 +43,14 @@ class HostFormPage extends React.Component {
                     <Badge id="chairs" onClick={this.handleBadgeClick} isActive={this.state.badges.includes('chairs')}>Chairs</Badge>
                     <Badge id="tables" onClick={this.handleBadgeClick} isActive={this.state.badges.includes('tables')}>Tables</Badge>
                     <Badge id="cleanup" onClick={this.handleBadgeClick} isActive={this.state.badges.includes('cleanup')}>Cleanup</Badge>
-                    <Badge id="justFood" onClick={this.handleBadgeClick} isActive={this.state.badges.includes('justFood')}>JustFood</Badge>
+                </div>
+                <input id="imageInput" type="file" onChange={this.handleImageChange} />
+                <label htmlFor="imageInput"><div className="image-container">
+                    {!this.state.image && '+'}
+                    {this.state.image && <img src={this.state.image} alt="main" />}
+                </div></label>
+                <div className="address-form">
+                    <input type="text" ref={(el) => { this.addressRef = el }} />
                 </div>
             </div>
         );
