@@ -9,6 +9,7 @@ class HostFormPage extends React.Component {
         badges: [],
         image: undefined,
         address: '',
+        location: undefined,
         price: '',
         occupancy: undefined,
         subImages: []
@@ -37,6 +38,10 @@ class HostFormPage extends React.Component {
         this.setState(() => ({ address }));
     }
     
+    setLocation = (location) => {
+        this.setState(() => ({ location }));
+    }
+    
     render() {
         return (
             <div className="page">
@@ -55,7 +60,11 @@ class HostFormPage extends React.Component {
                     {this.state.image && <img src={this.state.image} alt="main" />}
                 </div></label>
                 <div className="address-form">
-                    <LocationSearchInput  handleAddressChange={this.handleAddressChange} address={this.state.address}/>
+                    <LocationSearchInput
+                        handleAddressChange={this.handleAddressChange}
+                        address={this.state.address} 
+                        setLocation={this.setLocation}
+                    />
                 </div>
             </div>
         );
