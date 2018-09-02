@@ -1,5 +1,6 @@
 import React from 'react'
 import Badge from './Badge';
+import LocationSearchInput from './LocationSearchInput';
 
 import '../styles/host-form.css';
  
@@ -31,6 +32,10 @@ class HostFormPage extends React.Component {
         }
         reader.readAsDataURL(file);
     }
+
+    handleAddressChange = (address) => {
+        this.setState(() => ({ address }));
+    }
     
     render() {
         return (
@@ -50,7 +55,7 @@ class HostFormPage extends React.Component {
                     {this.state.image && <img src={this.state.image} alt="main" />}
                 </div></label>
                 <div className="address-form">
-                    <input type="text" ref={(el) => { this.addressRef = el }} />
+                    <LocationSearchInput  handleAddressChange={this.handleAddressChange} address={this.state.address}/>
                 </div>
             </div>
         );
