@@ -1,6 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux';
 import Badge from './Badge';
 import LocationSearchInput from './LocationSearchInput';
+import TimeSelect from './TimeSelect';
 
 import '../styles/host-form.css';
  
@@ -12,7 +14,8 @@ class HostFormPage extends React.Component {
         location: undefined,
         price: '', // Convert to Number and cents before saving to db
         occupancy: undefined,
-        subImages: []
+        subImages: [],
+        hours: { open: 0, close: 0 }
     }
 
     handleBadgeClick = (e) => {
@@ -25,6 +28,16 @@ class HostFormPage extends React.Component {
         }
     }
 
+    handleOpenChange = (e) => {
+        const open = Number(e.target.value);
+        this.setState((prevState) => ({ hours: { ...prevState.hours, open } }));
+    }
+
+    handleCloseChange = (e) => {
+        const close = Number(e.target.value);
+        this.setState((prevState) => ({ hours: { ...prevState.hours, close } }));
+    }
+    
     handleImageChange = (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
@@ -74,6 +87,21 @@ class HostFormPage extends React.Component {
         const src = e.currentTarget.attributes.value.value;
         this.setState((prevState) => ({ subImages: prevState.subImages.filter((image) => image !== src) }));
     }
+
+    handleSubmit = (e) => {
+        fetch('/listings', {
+            method: 'POST',
+            body: JSON.stringify({
+                ...this.state,
+                host: this.props.userId,
+                price: Number(this.state.price) * 100,
+                occupancy: Number(this.state.occupancy)
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then((res) => res.json())
+            .then((res) => console.log(res));
+    }
     
     render() {
         return (
@@ -87,6 +115,12 @@ class HostFormPage extends React.Component {
                     <Badge id="tables" onClick={this.handleBadgeClick} isActive={this.state.badges.includes('tables')}>Tables</Badge>
                     <Badge id="cleanup" onClick={this.handleBadgeClick} isActive={this.state.badges.includes('cleanup')}>Cleanup</Badge>
                     <Badge id="fuel" onClick={this.handleBadgeClick} isActive={this.state.badges.includes('fuel')}>Coal/Gas</Badge>
+                </div>
+                <div className="hours-container">
+                    <span>Open from</span>
+                    <TimeSelect onChange={this.handleOpenChange} />
+                    <span>to</span>
+                    <TimeSelect onChange={this.handleCloseChange} />
                 </div>
                 <input id="imageInput" type="file" onChange={this.handleImageChange} />
                 <label htmlFor="imageInput"><div className="image-container">
@@ -127,9 +161,14 @@ class HostFormPage extends React.Component {
                         </div>
                     ))}
                 </div>
+                <button onClick={this.handleSubmit}>Create</button>
             </div>
         );
     }
 }
 
-export default HostFormPage;
+const mapStateToProps = (state) => ({
+    userId: state.user._id
+});
+
+export default connect(mapStateToProps)(HostFormPage);

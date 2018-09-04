@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Scheme;
+const Schema = mongoose.Schema;
 
 listingSchema = new Schema({
     host: String,
@@ -10,7 +10,8 @@ listingSchema = new Schema({
     price: Number, 
     occupancy: Number,
     subImages: [ String ],
-    bookedSlots: [ { day: String, begin: String, end: String } ]
+    bookedSlots: [ { day: String, begin: Number, end: Number } ],
+    hours: { open: Number, close: Number }
 });
 
 const Listing = mongoose.model('Listing', listingSchema);

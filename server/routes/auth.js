@@ -1,11 +1,12 @@
 const express = require('express');
-const router = express.Router();
 const jwt = require('jwt-simple');
 const passport = require('passport');
 require('../passport')(passport);
 const User = require('../models/user');
 require('../mongo').connect();
 const secrets = require('../secrets');
+
+const router = express.Router();
 
 router.post('/signup', (req, res) => {
     const { userName, password, name } = req.body;

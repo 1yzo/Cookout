@@ -16,6 +16,19 @@
     color: black;
 }
 
+.hours-container {
+    margin: 3rem 0;
+    font-size: 3rem;
+}
+
+.hours-container > select {
+    /* max-width: 6rem; */
+    text-align: center;
+    border: none;
+    border: 1px solid #eee;
+    margin: 0 1rem;
+}
+
 #imageInput, #subImagesInput {
     width: 0.1px;
 	height: 0.1px;
