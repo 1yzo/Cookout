@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 class HostPage extends React.Component {
+    loadListing = (listingId) => {
+        
+    }
+    
     render() {
         const { listings } = this.props;
         return (
@@ -12,11 +16,7 @@ class HostPage extends React.Component {
                     <button>Add a listing</button>
                 </Link>
                 <div className="listings-container">
-                    {listings.map((listing) => (
-                        <div key={listing._id} className="listing">
-
-                        </div>
-                    ))}
+                    {listings.map((listingId) => this.loadListing(listingId))}
                 </div>
             </div>
         );

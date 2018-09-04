@@ -9,6 +9,7 @@ listingSchema = new Schema({
     location: { lat: Number, lng: Number },
     price: Number, 
     occupancy: Number,
+    description: String,
     subImages: [ String ],
     bookedSlots: [ { day: String, begin: Number, end: Number } ],
     hours: { open: Number, close: Number }

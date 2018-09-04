@@ -14,6 +14,7 @@ class HostFormPage extends React.Component {
         location: undefined,
         price: '', // Convert to Number and cents before saving to db
         occupancy: undefined,
+        description: '',
         subImages: [],
         hours: { open: 0, close: 0 }
     }
@@ -69,6 +70,11 @@ class HostFormPage extends React.Component {
         }
     }
 
+    handleDescriptionChange = (e) => {
+        const description = e.target.value;
+        this.setState(() => ({ description }));
+    }
+
     handleSubImagesChange = (e) => {
         const files = e.target.files;
         for (let i of files) {
@@ -98,9 +104,7 @@ class HostFormPage extends React.Component {
                 occupancy: Number(this.state.occupancy)
             }),
             headers: { 'Content-Type': 'application/json' }
-        })
-            .then((res) => res.json())
-            .then((res) => console.log(res));
+        });
     }
     
     render() {
@@ -148,6 +152,8 @@ class HostFormPage extends React.Component {
                         placeholder="Max Occupancy"
                     />
                 </div>
+
+                <textarea value={this.state.description} onChange={this.handleDescriptionChange} placeholder="Description" />
                 <input id="subImagesInput" type="file" onChange={this.handleSubImagesChange} />
                 <div className="sub-images-title">
                     <div>More Images</div>
