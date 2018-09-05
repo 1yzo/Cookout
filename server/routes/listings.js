@@ -26,7 +26,10 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:listingId', (req, res) => {
-    
+    const id = req.params.listingId;
+    Listing.findById(id)
+        .then((listing) => res.json(listing))
+        .catch(err => res.status(500).send(500));
 });
 
 module.exports = router;

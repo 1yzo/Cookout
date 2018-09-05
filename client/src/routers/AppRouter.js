@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import HostPage from '../components/HostPage';
 import HostFormPage from '../components/HostFormPage';
 import { startSetUser } from '../actions/user';
+import PrivateRoute from './PrivateRoute';
 
 class AppRouter extends React.Component {
     componentDidMount() {
@@ -22,8 +23,8 @@ class AppRouter extends React.Component {
                     <Header />
                     <Switch>
                         <Route path="/" component={LandingPage} exact />
-                        <Route path="/host" component={HostPage} />
-                        <Route path="/host-form" component={HostFormPage} />
+                        <PrivateRoute path="/host" component={HostPage} />
+                        <PrivateRoute path="/host-form" component={HostFormPage} />
                     </Switch>
                 </div>
             </BrowserRouter>
