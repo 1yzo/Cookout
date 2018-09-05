@@ -9,12 +9,12 @@ import { startSetUser } from '../actions/user';
 import PrivateRoute from './PrivateRoute';
 
 class AppRouter extends React.Component {
-    componentDidMount() {
-        const { tokenExists, startSetUser } = this.props;
-        if (tokenExists) {
-            startSetUser();
-        }
-    }
+    // componentDidMount() {
+    //     const { tokenExists, startSetUser } = this.props;
+    //     if (tokenExists) {
+    //         startSetUser();
+    //     }
+    // }
     
     render() {
         return (
