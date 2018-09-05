@@ -3,6 +3,10 @@ export const setUser = (user) => ({
     user
 });
 
+export const removeUser = () => ({
+    type: 'REMOVE_USER'
+});
+
 export const startSetUser = () => {
     return (dispatch, getState) => {
         const { token } = getState().auth;

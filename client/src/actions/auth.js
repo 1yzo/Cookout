@@ -1,3 +1,5 @@
+import { startSetUser } from './user';
+
 export const setAuthToken = (token) => ({
     type: 'SET_AUTH_TOKEN',
     token
@@ -40,7 +42,10 @@ export const startLogin = (email, password) => {
                     throw new Error('Wrong email or password');
                 }
             })
-            .then((token) => dispatch(setAuthToken(token)))
+            .then((token) => {
+                dispatch(setAuthToken(token));
+                dispatch(startSetUser());
+            })
             .catch((err) => dispatch(setAuthError(err.toString())));
     };
 }

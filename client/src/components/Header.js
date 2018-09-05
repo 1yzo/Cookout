@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import LoginModal from './LoginModal';
 import { removeAuthToken } from '../actions/auth';
+import { removeUser } from '../actions/user';
 
 import '../styles/header.css';
 
@@ -14,10 +15,17 @@ class Header extends React.Component {
     handleLoginClick = () => {
         this.setState(() => ({ modalShouldOpen: true }));
     }
+
+    handleLogoutClick = () => {
+        const { dispatch } = this.props;
+        dispatch(removeAuthToken());
+        dispatch(removeUser());
+    }
     
     closeModal = () => {
         this.setState(() => ({ modalShouldOpen: false }));
     }
+
     
     render() {
         const { isLoggedIn } = this.props;
@@ -29,7 +37,7 @@ class Header extends React.Component {
                     {!isLoggedIn && <a onClick={this.handleLoginClick}>Login</a>}
                     {isLoggedIn && <a>Bookings</a>}
                     {isLoggedIn && <a>Saved</a>}
-                    {isLoggedIn && <i onClick={() => this.props.dispatch(removeAuthToken())} className="fas fa-user-circle profile-icon"></i>}
+                    {isLoggedIn && <i onClick={this.handleLogoutClick} className="fas fa-user-circle profile-icon"></i>}
                 </div>
                 <LoginModal isOpen={this.state.modalShouldOpen} closeModal={this.closeModal} />
             </div>

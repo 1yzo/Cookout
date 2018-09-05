@@ -18,12 +18,6 @@ class HostPage extends React.Component {
         }
     }
     
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.listingIds.length !== prevState.listings.length) {
-            this.loadListings();
-        }
-    }
-    
     componentDidMount() {
         const { dispatch, userId } = this.props;
         dispatch(startSetListings(userId))
