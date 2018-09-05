@@ -10,6 +10,7 @@ export const removeUser = () => ({
 export const startSetUser = () => {
     return (dispatch, getState) => {
         const { token } = getState().auth;
+        console.log(token);
         return fetch('/auth/getUser', {
             method: 'GET',
             headers: { 'Authorization': token }
