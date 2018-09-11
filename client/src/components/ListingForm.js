@@ -12,7 +12,7 @@ class ListingForm extends React.Component {
         image: undefined,
         imageTag: this.props.listing ? this.props.listing.image : undefined,
         address: this.props.listing ? this.props.listing.address : '',
-        location: this.props.listing ? this.props.listing.location : undefined,
+        location: this.props.listing ? this.props.listing.location : {},
         price: this.props.listing ? this.props.listing.price.toString() : '',
         occupancy: this.props.listing ? this.props.listing.occupancy.toString() : undefined,
         description: this.props.listing ? this.props.listing.description : '',
@@ -96,6 +96,9 @@ class ListingForm extends React.Component {
     handleImageDelete = (e) => {
         const tagToDelete = e.currentTarget.attributes.value.value;
         this.setState((prevState) => ({ subImages: prevState.subImages.filter(({ tag }) => tag !== tagToDelete) }));
+        if (this.props.listing) {
+            // Also delete from s3 bucket
+        }
     }
 
     handleSubmit = (e) => {
@@ -128,13 +131,13 @@ class ListingForm extends React.Component {
                 .then(res => res.blob())
                 .then(res => { this.setState(() => ({ image: res })) })
                 .catch(err => { console.log(err) });
-        }
-        if (listing.subImages.length > 0) {
-            for (let imageUrl of listing.subImages) {
-                fetch(imageUrl)
-                    .then(res => res.blob())
-                    .then(res => { this.setState((prevState) => ({ subImages: [...prevState.subImages, { file: res, tag: imageUrl }] })) })
-                    .catch(err => { console.log(err) });
+            if (listing.subImages.length > 0) {
+                for (let imageUrl of listing.subImages) {
+                    fetch(imageUrl)
+                        .then(res => res.blob())
+                        .then(res => { this.setState((prevState) => ({ subImages: [...prevState.subImages, { file: res, tag: imageUrl }] })) })
+                        .catch(err => { console.log(err) });
+                }
             }
         }
     }

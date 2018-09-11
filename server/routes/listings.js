@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const uuid = require('uuid/v4');
+const AWS = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
 const Listing = require('../models/listing');
 const User = require('../models/user');
-
-const AWS = require('aws-sdk');
 const awsSecret = require('../secrets').aws;
+
 const config = {
     accessKeyId: awsSecret.accessKeyId, secretAccessKey: awsSecret.secretAccessKey, region: awsSecret.region
 };
 AWS.config.update(config);
 const s3 = new AWS.S3();
 
-const multer = require('multer');
-const multerS3 = require('multer-s3');
 const upload = multer({
     storage: multerS3({
         s3: s3,
@@ -50,15 +50,23 @@ router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImag
         image: image.location,
         subImages: subImages ? subImages.map((image) => image.location) : []
     });
+    // listing.save()
+    //     .then(() => res.json(listing))
+    //     .then(() => {
+    //         User.findById(details.host)
+    //             .then((user) => { 
+    //                 user.listings = user.listings.concat(listing._id);
+    //                 user.save().catch((err) => res.status(500).send(err));
+    //              })
+    //              .catch((err) => res.status(500).send(err));
+    //     })
+    //     .catch((err) => res.status(500).send(err));
     listing.save()
         .then(() => res.json(listing))
-        .then(() => {
-            User.findById(details.host)
-                .then((user) => { 
-                    user.listings = user.listings.concat(listing._id);
-                    user.save().catch((err) => res.status(500).send(err));
-                 })
-                 .catch((err) => res.status(500).send(err));
+        .then(() => User.findById(details.host))
+        .then((user) => { 
+            user.listings = user.listings.concat(listing._id);
+            return user.save();
         })
         .catch((err) => res.status(500).send(err));
 });
