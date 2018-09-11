@@ -1,10 +1,11 @@
 import React from 'react';
 
+import '../styles/pages.css';
+
 class LandingPage extends React.Component {
     render() {
         return (
-            <div>
-                LandingPage
+            <div className="landing-page">
             </div>
         );
     }

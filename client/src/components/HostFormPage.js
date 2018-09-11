@@ -41,11 +41,7 @@ class HostFormPage extends React.Component {
     
     handleImageChange = (e) => {
         const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            this.setState(() => ({ image: reader.result }));
-        }
-        reader.readAsDataURL(file);
+        this.setState(() => ({ image: file }));
     }
 
     handleAddressChange = (address) => {
@@ -77,16 +73,7 @@ class HostFormPage extends React.Component {
 
     handleSubImagesChange = (e) => {
         const files = e.target.files;
-        for (let i of files) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const src= reader.result;
-                if (!this.state.subImages.includes(src)) {
-                    this.setState((prevState) => ({ subImages: [ ...prevState.subImages, src ] }));
-                }
-            }
-            reader.readAsDataURL(i);
-        }       
+        this.setState(() => ({ subImages: [...files] }));
     }
 
     handleImageDelete = (e) => {
@@ -95,16 +82,23 @@ class HostFormPage extends React.Component {
     }
 
     handleSubmit = (e) => {
+        const formData = new FormData();
+        formData.append('host', this.props.userId);
+        formData.append('badges', JSON.stringify(this.state.badges));
+        formData.append('image', this.state.image);
+        formData.append('address', this.state.address);
+        formData.append('location', JSON.stringify(this.state.location));
+        formData.append('price', Number(this.state.price) * 100);
+        formData.append('occupancy', Number(this.state.occupancy));
+        formData.append('description', this.state.description);
+        formData.append('hours', JSON.stringify(this.state.hours));
+        for (let i of this.state.subImages) {
+            formData.append('subImages[]', i);
+        }
         fetch('/listings', {
             method: 'POST',
-            body: JSON.stringify({
-                ...this.state,
-                host: this.props.userId,
-                price: Number(this.state.price) * 100,
-                occupancy: Number(this.state.occupancy)
-            }),
-            headers: { 'Content-Type': 'application/json' }
-        });
+            body: formData
+        }).catch(err => console.log(err));
     }
     
     render() {
@@ -154,14 +148,14 @@ class HostFormPage extends React.Component {
                 </div>
 
                 <textarea value={this.state.description} onChange={this.handleDescriptionChange} placeholder="Description" />
-                <input id="subImagesInput" type="file" onChange={this.handleSubImagesChange} />
+                <input id="subImagesInput" type="file" multiple onChange={this.handleSubImagesChange} />
                 <div className="sub-images-title">
                     <div>More Images</div>
                     <label htmlFor="subImagesInput" className="sub-images-label">+</label>
                 </div>
                 <div className="sub-images-container">
                     {this.state.subImages.map((image, i) => (
-                        <div style={{ position: 'relative' }} key={image}>
+                        <div style={{ position: 'relative' }} key={image.name}>
                             <img className="sub-image" src={image} alt="extra" value={i} />
                             <div className="sub-image-delete" onClick={this.handleImageDelete} value={image}>-</div>
                         </div>

@@ -13,7 +13,7 @@ class HostPage extends React.Component {
         for (let i of listingIds) {
         fetch(`/listings/${i}`)
             .then((res) => res.json())
-            .then((listing) => this.setState((prevState) => ({ listings: [ ...prevState.listings, listing ] })))
+            .then((listing) => listing && this.setState((prevState) => ({ listings: [ ...prevState.listings, listing ] })))
             .catch((err) => console.log(err));
         }
     }

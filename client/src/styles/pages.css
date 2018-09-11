@@ -1,0 +1,6 @@
+.landing-page {
+    width: 100vw;
+    height: calc(100vh);
+    background-image: url('/images/cookout-hero.jpg');
+    background-size: cover;
+}

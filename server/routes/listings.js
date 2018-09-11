@@ -1,11 +1,39 @@
 const express = require('express');
 const router = express.Router();
+const uuid = require('uuid/v4');
+
 const Listing = require('../models/listing');
 const User = require('../models/user');
 
-router.post('/', (req, res) => {
+const AWS = require('aws-sdk');
+const awsSecret = require('../secrets').aws;
+const config = {
+    accessKeyId: awsSecret.accessKeyId, secretAccessKey: awsSecret.secretAccessKey, region: awsSecret.region
+};
+AWS.config.update(config);
+const s3 = new AWS.S3();
+
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: 'cookout-images',
+        key: function (req, file, cb) {
+            cb(null, `${uuid()}.jpg`);
+        }
+    })
+});
+
+router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImages[]', maxCount: 10 }]), (req, res) => {
     const details = req.body;
-    const listing = new Listing({ ...details });
+    const image = req.files['image'][0];
+    const subImages = req.files['subImages[]'];
+    const listing = new Listing({ 
+        ...details,
+        image: image.location,
+        subImages: subImages ? subImages.map((image) => image.location) : []
+    });
     listing.save()
         .then(() => res.json(listing))
         .then(() => {
