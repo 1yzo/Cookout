@@ -63,8 +63,8 @@ router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImag
         .catch((err) => res.status(500).send(err));
 });
 
-router.put('/:listingId', upload.any(), (req, res) => {
-    console.log(JSON.parse(req.body.hours));
+router.put('/:listingId', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImages[]', maxCount: 10 }]), (req, res) => {
+    console.log(req.files['subImages[]']);
 });
 
 module.exports = router;

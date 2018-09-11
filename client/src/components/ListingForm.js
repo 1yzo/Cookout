@@ -16,7 +16,7 @@ class ListingForm extends React.Component {
         price: this.props.listing ? this.props.listing.price.toString() : '',
         occupancy: this.props.listing ? this.props.listing.occupancy.toString() : undefined,
         description: this.props.listing ? this.props.listing.description : '',
-        subImages: this.props.listing.subImages.length > 0 ? this.props.listing.subImages.map((image) => ({ file: null, tag: image })) : [],
+        subImages: [],
         hours: this.props.listing ? this.props.listing.hours : { open: 0, close: 0 },
         error: ''
     }
@@ -88,7 +88,9 @@ class ListingForm extends React.Component {
                 }));
             }
         }
-        reader.readAsDataURL(file);
+        if (this.state.subImages.length < 10) {
+            reader.readAsDataURL(file);
+        }
     }
 
     handleImageDelete = (e) => {
@@ -116,6 +118,24 @@ class ListingForm extends React.Component {
                 .catch(err => console.log(err));
         } else {
             this.setState(() => ({ error: 'A required field is missing' }));
+        }
+    }
+    
+    componentDidMount() {
+        const { listing } = this.props;
+        if (listing) {
+            fetch(listing.image)
+                .then(res => res.blob())
+                .then(res => { this.setState(() => ({ image: res })) })
+                .catch(err => { console.log(err) });
+        }
+        if (listing.subImages.length > 0) {
+            for (let imageUrl of listing.subImages) {
+                fetch(imageUrl)
+                    .then(res => res.blob())
+                    .then(res => { this.setState((prevState) => ({ subImages: [...prevState.subImages, { file: res, tag: imageUrl }] })) })
+                    .catch(err => { console.log(err) });
+            }
         }
     }
     
