@@ -6,17 +6,19 @@ import TimeSelect from './TimeSelect';
 
 import '../styles/host-form.css';
  
-class HostFormPage extends React.Component {
+class ListingForm extends React.Component {
     state = {
-        badges: [],
+        badges: this.props.listing ? this.props.listing.badges : [],
         image: undefined,
-        address: '',
-        location: undefined,
-        price: '', // Convert to Number and cents before saving to db
-        occupancy: undefined,
-        description: '',
-        subImages: [],
-        hours: { open: 0, close: 0 }
+        imageTag: this.props.listing ? this.props.listing.image : undefined,
+        address: this.props.listing ? this.props.listing.address : '',
+        location: this.props.listing ? this.props.listing.location : undefined,
+        price: this.props.listing ? this.props.listing.price.toString() : '',
+        occupancy: this.props.listing ? this.props.listing.occupancy.toString() : undefined,
+        description: this.props.listing ? this.props.listing.description : '',
+        subImages: this.props.listing.subImages.length > 0 ? this.props.listing.subImages.map((image) => ({ file: null, tag: image })) : [],
+        hours: this.props.listing ? this.props.listing.hours : { open: 0, close: 0 },
+        error: ''
     }
 
     handleBadgeClick = (e) => {
@@ -41,7 +43,11 @@ class HostFormPage extends React.Component {
     
     handleImageChange = (e) => {
         const file = e.target.files[0];
-        this.setState(() => ({ image: file }));
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            this.setState(() => ({ image: file, imageTag: reader.result }));
+        }
+        reader.readAsDataURL(file);
     }
 
     handleAddressChange = (address) => {
@@ -72,33 +78,45 @@ class HostFormPage extends React.Component {
     }
 
     handleSubImagesChange = (e) => {
-        const files = e.target.files;
-        this.setState(() => ({ subImages: [...files] }));
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result;
+            if (!this.state.subImages.map(({ tag }) => tag).includes(result)) {
+                this.setState((prevState) => ({
+                    subImages: [...prevState.subImages, { file, tag: result }]
+                }));
+            }
+        }
+        reader.readAsDataURL(file);
     }
 
     handleImageDelete = (e) => {
-        const src = e.currentTarget.attributes.value.value;
-        this.setState((prevState) => ({ subImages: prevState.subImages.filter((image) => image !== src) }));
+        const tagToDelete = e.currentTarget.attributes.value.value;
+        this.setState((prevState) => ({ subImages: prevState.subImages.filter(({ tag }) => tag !== tagToDelete) }));
     }
 
     handleSubmit = (e) => {
-        const formData = new FormData();
-        formData.append('host', this.props.userId);
-        formData.append('badges', JSON.stringify(this.state.badges));
-        formData.append('image', this.state.image);
-        formData.append('address', this.state.address);
-        formData.append('location', JSON.stringify(this.state.location));
-        formData.append('price', Number(this.state.price) * 100);
-        formData.append('occupancy', Number(this.state.occupancy));
-        formData.append('description', this.state.description);
-        formData.append('hours', JSON.stringify(this.state.hours));
-        for (let i of this.state.subImages) {
-            formData.append('subImages[]', i);
+        if (this.state.image && this.state.address && this.state.price && this.state.occupancy) {
+            const formData = new FormData();
+            formData.append('host', this.props.userId);
+            formData.append('badges', JSON.stringify(this.state.badges));
+            formData.append('image', this.state.image);
+            formData.append('address', this.state.address);
+            formData.append('location', JSON.stringify(this.state.location));
+            formData.append('price', Number(this.state.price) * 100);
+            formData.append('occupancy', Number(this.state.occupancy));
+            formData.append('description', this.state.description);
+            formData.append('hours', JSON.stringify(this.state.hours));
+            for (let i of this.state.subImages) {
+                formData.append('subImages[]', i.file);
+            }
+            this.props.handleSubmit(formData)
+                .then(() => this.setState(() => ({ })))
+                .catch(err => console.log(err));
+        } else {
+            this.setState(() => ({ error: 'A required field is missing' }));
         }
-        fetch('/listings', {
-            method: 'POST',
-            body: formData
-        }).catch(err => console.log(err));
     }
     
     render() {
@@ -122,8 +140,8 @@ class HostFormPage extends React.Component {
                 </div>
                 <input id="imageInput" type="file" onChange={this.handleImageChange} />
                 <label htmlFor="imageInput"><div className="image-container">
-                    {!this.state.image && '+'}
-                    {this.state.image && <img src={this.state.image} alt="main" />}
+                    {!this.state.imageTag && '+'}
+                    {this.state.imageTag && <img src={this.state.imageTag} alt=" " />}
                 </div></label>
                 <div className="address-form">
                     <LocationSearchInput
@@ -148,19 +166,20 @@ class HostFormPage extends React.Component {
                 </div>
 
                 <textarea value={this.state.description} onChange={this.handleDescriptionChange} placeholder="Description" />
-                <input id="subImagesInput" type="file" multiple onChange={this.handleSubImagesChange} />
+                <input id="subImagesInput" type="file" onChange={this.handleSubImagesChange} />
                 <div className="sub-images-title">
                     <div>More Images</div>
                     <label htmlFor="subImagesInput" className="sub-images-label">+</label>
                 </div>
                 <div className="sub-images-container">
-                    {this.state.subImages.map((image, i) => (
-                        <div style={{ position: 'relative' }} key={image.name}>
-                            <img className="sub-image" src={image} alt="extra" value={i} />
-                            <div className="sub-image-delete" onClick={this.handleImageDelete} value={image}>-</div>
+                    {this.state.subImages.map(({ tag }) => (
+                        <div style={{ position: 'relative' }} key={tag}>
+                            <img className="sub-image" src={tag} alt="extra" />
+                            <div className="sub-image-delete" onClick={this.handleImageDelete} value={tag}>-</div>
                         </div>
                     ))}
                 </div>
+                {this.state.error && <div>{this.state.error}</div>}
                 <button onClick={this.handleSubmit}>Create</button>
             </div>
         );
@@ -171,4 +190,4 @@ const mapStateToProps = (state) => ({
     userId: state.user._id
 });
 
-export default connect(mapStateToProps)(HostFormPage);
+export default connect(mapStateToProps)(ListingForm);

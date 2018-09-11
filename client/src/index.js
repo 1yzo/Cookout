@@ -4,9 +4,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import configureStore from './store/configureStore';
-// import AppRouter from './routers/AppRouter';
 import App from './components/App';
-import { startSetUser } from './actions/user';
 
 import 'normalize.css/normalize.css';
 import './styles/base.css';

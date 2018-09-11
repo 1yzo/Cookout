@@ -25,12 +25,28 @@ const upload = multer({
     })
 });
 
+router.get('/', (req, res) => {
+    Listing.find()
+        .then((listings) => res.json(listings))
+        .catch((err) => res.status(500).send(err));
+});
+
+router.get('/:listingId', (req, res) => {
+    const id = req.params.listingId;
+    Listing.findById(id)
+        .then((listing) => res.json(listing))
+        .catch(err => res.status(500).send(500));
+});
+
 router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImages[]', maxCount: 10 }]), (req, res) => {
     const details = req.body;
     const image = req.files['image'][0];
     const subImages = req.files['subImages[]'];
     const listing = new Listing({ 
         ...details,
+        location: JSON.parse(details.location),
+        badges: JSON.parse(details.badges),
+        hours: JSON.parse(details.hours),
         image: image.location,
         subImages: subImages ? subImages.map((image) => image.location) : []
     });
@@ -47,17 +63,8 @@ router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImag
         .catch((err) => res.status(500).send(err));
 });
 
-router.get('/', (req, res) => {
-    Listing.find()
-        .then((listings) => res.json(listings))
-        .catch((err) => res.status(500).send(err));
-});
-
-router.get('/:listingId', (req, res) => {
-    const id = req.params.listingId;
-    Listing.findById(id)
-        .then((listing) => res.json(listing))
-        .catch(err => res.status(500).send(500));
+router.put('/:listingId', upload.any(), (req, res) => {
+    console.log(JSON.parse(req.body.hours));
 });
 
 module.exports = router;

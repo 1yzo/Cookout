@@ -1,0 +1,8 @@
+.listing-card {
+    display: flex;
+}
+
+.listing-card > img {
+    width: 250px;
+    height: 250px;
+}
