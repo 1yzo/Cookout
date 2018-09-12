@@ -50,17 +50,6 @@ router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImag
         image: image.location,
         subImages: subImages ? subImages.map((image) => image.location) : []
     });
-    // listing.save()
-    //     .then(() => res.json(listing))
-    //     .then(() => {
-    //         User.findById(details.host)
-    //             .then((user) => { 
-    //                 user.listings = user.listings.concat(listing._id);
-    //                 user.save().catch((err) => res.status(500).send(err));
-    //              })
-    //              .catch((err) => res.status(500).send(err));
-    //     })
-    //     .catch((err) => res.status(500).send(err));
     listing.save()
         .then(() => res.json(listing))
         .then(() => User.findById(details.host))
@@ -72,7 +61,46 @@ router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImag
 });
 
 router.put('/:listingId', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImages[]', maxCount: 10 }]), (req, res) => {
-    console.log(req.files['subImages[]']);
+    const details = req.body;
+    const image = req.files['image'][0];
+    const subImages = req.files['subImages[]'];
+    const s3ObjectKeysToDelete = JSON.parse(details.s3ObjectKeysToDelete);
+    if (s3ObjectKeysToDelete.length > 0) {
+        const params = {
+            Bucket: 'cookout-images',
+            Delete: {
+                Objects: s3ObjectKeysToDelete.map((objectKey) => ({ Key: objectKey }))
+            }
+        };
+        console.log(params);
+        s3.deleteObjects(params, (err, data) => {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                Listing.findByIdAndUpdate(req.params.listingId, { 
+                    ...details,
+                    location: JSON.parse(details.location),
+                    badges: JSON.parse(details.badges),
+                    hours: JSON.parse(details.hours),
+                    image: image.location,
+                    subImages: subImages ? subImages.map((image) => image.location) : []
+                })
+                    .then(() => { res.json('success') })
+                    .catch(err => res.status(500).send(err));
+            }
+        })
+    } else {
+        Listing.findByIdAndUpdate(req.params.listingId, { 
+            ...details,
+            location: JSON.parse(details.location),
+            badges: JSON.parse(details.badges),
+            hours: JSON.parse(details.hours),
+            image: image.location,
+            subImages: subImages ? subImages.map((image) => image.location) : []
+        })
+            .then(() => { res.json('success') })
+            .catch(err => res.status(500).send(err));
+    }
 });
 
 module.exports = router;

@@ -27,7 +27,7 @@ class EditListingPage extends React.Component {
                                 method: 'PUT',
                                 body
                             })
-                                .then(() => { resolve() })
+                                .then((res) => { resolve(res) })
                                 .catch((err) => { reject(err) });
                         });
                     }}
