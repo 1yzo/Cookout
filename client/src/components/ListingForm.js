@@ -9,8 +9,8 @@ import '../styles/host-form.css';
 class ListingForm extends React.Component {
     state = {
         badges: this.props.listing ? this.props.listing.badges : [],
-        image: undefined,
-        imageTag: this.props.listing ? this.props.listing.image : undefined,
+        image: this.props.listing ? { file: null, tag: this.props.listing.image, fromS3: true } : undefined,
+        // imageTag: this.props.listing ? this.props.listing.image : undefined,
         address: this.props.listing ? this.props.listing.address : '',
         location: this.props.listing ? this.props.listing.location : {},
         price: this.props.listing ? (this.props.listing.price / 100).toString() : '',
@@ -45,8 +45,13 @@ class ListingForm extends React.Component {
     handleImageChange = (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
+        if (this.state.image && this.state.image.fromS3) {
+            this.setState((prevState) => ({
+                s3ObjectKeysToDelete: [...prevState.s3ObjectKeysToDelete, this.urlToObjectKey(this.state.image.tag)]
+            }));
+        }
         reader.onloadend = () => {
-            this.setState(() => ({ image: file, imageTag: reader.result }));
+            this.setState(() => ({ image: { file, tag: reader.result, fromS3: false } }));
         }
         reader.readAsDataURL(file);
     }
@@ -100,8 +105,7 @@ class ListingForm extends React.Component {
         if (this.props.listing) {
             const subImage = this.state.subImages.find(({ tag }) => tag === tagToDelete);
             if (subImage.fromS3) {
-                const url = subImage.tag.split('/');
-                const s3ObjectKey = url[url.length - 1];
+                const s3ObjectKey = this.urlToObjectKey(subImage.tag);
                 this.setState((prevState) => ({ s3ObjectKeysToDelete: [...prevState.s3ObjectKeysToDelete, s3ObjectKey] }));
             }
         }
@@ -112,7 +116,7 @@ class ListingForm extends React.Component {
             const formData = new FormData();
             formData.append('host', this.props.userId);
             formData.append('badges', JSON.stringify(this.state.badges));
-            formData.append('image', this.state.image);
+            formData.append('image', this.state.image.file);
             formData.append('address', this.state.address);
             formData.append('location', JSON.stringify(this.state.location));
             formData.append('price', Number(this.state.price) * 100);
@@ -132,12 +136,18 @@ class ListingForm extends React.Component {
         }
     }
     
+    urlToObjectKey = (url) => {
+        const urlArr = url.split('/');
+        const s3ObjectKey = urlArr[urlArr.length - 1];
+        return s3ObjectKey;
+    }
+    
     componentDidMount() {
         const { listing } = this.props;
         if (listing) {
             fetch(listing.image)
                 .then(res => res.blob())
-                .then(res => { this.setState(() => ({ image: res })) })
+                .then(res => { this.setState((prevState) => ({ image: { ...prevState.image,  file: res } })) })
                 .catch(err => { console.log(err) });
             if (listing.subImages.length > 0) {
                 for (let imageUrl of listing.subImages) {
@@ -171,8 +181,8 @@ class ListingForm extends React.Component {
                 </div>
                 <input id="imageInput" type="file" onChange={this.handleImageChange} />
                 <label htmlFor="imageInput"><div className="image-container">
-                    {!this.state.imageTag && '+'}
-                    {this.state.imageTag && <img src={this.state.imageTag} alt=" " />}
+                    {!this.state.image && '+'}
+                    {this.state.image && <img src={this.state.image.tag} alt=" " />}
                 </div></label>
                 <div className="address-form">
                     <LocationSearchInput

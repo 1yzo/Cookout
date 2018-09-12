@@ -72,7 +72,6 @@ router.put('/:listingId', upload.fields([{ name: 'image', maxCount: 1 }, { name:
                 Objects: s3ObjectKeysToDelete.map((objectKey) => ({ Key: objectKey }))
             }
         };
-        console.log(params);
         s3.deleteObjects(params, (err, data) => {
             if (err) {
                 res.status(500).send(err);
