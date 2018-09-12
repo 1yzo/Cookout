@@ -9,8 +9,7 @@ import '../styles/host-form.css';
 class ListingForm extends React.Component {
     state = {
         badges: this.props.listing ? this.props.listing.badges : [],
-        image: this.props.listing ? { file: null, tag: this.props.listing.image, fromS3: true } : undefined,
-        // imageTag: this.props.listing ? this.props.listing.image : undefined,
+        image: this.props.listing ? { file: null, tag: this.props.listing.image } : undefined,
         address: this.props.listing ? this.props.listing.address : '',
         location: this.props.listing ? this.props.listing.location : {},
         price: this.props.listing ? (this.props.listing.price / 100).toString() : '',
@@ -45,11 +44,6 @@ class ListingForm extends React.Component {
     handleImageChange = (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
-        if (this.state.image && this.state.image.fromS3) {
-            this.setState((prevState) => ({
-                s3ObjectKeysToDelete: [...prevState.s3ObjectKeysToDelete, this.urlToObjectKey(this.state.image.tag)]
-            }));
-        }
         reader.onloadend = () => {
             this.setState(() => ({ image: { file, tag: reader.result, fromS3: false } }));
         }
@@ -102,13 +96,6 @@ class ListingForm extends React.Component {
     handleImageDelete = (e) => {
         const tagToDelete = e.currentTarget.attributes.value.value;
         this.setState((prevState) => ({ subImages: prevState.subImages.filter(({ tag }) => tag !== tagToDelete) }));
-        if (this.props.listing) {
-            const subImage = this.state.subImages.find(({ tag }) => tag === tagToDelete);
-            if (subImage.fromS3) {
-                const s3ObjectKey = this.urlToObjectKey(subImage.tag);
-                this.setState((prevState) => ({ s3ObjectKeysToDelete: [...prevState.s3ObjectKeysToDelete, s3ObjectKey] }));
-            }
-        }
     }
 
     handleSubmit = (e) => {
@@ -127,9 +114,8 @@ class ListingForm extends React.Component {
             for (let i of this.state.subImages) {
                 formData.append('subImages[]', i.file);
             }
-            console.log('submitting');
             this.props.handleSubmit(formData)
-                .then(() => { console.log('success') })
+                .then(() => { this.props.history.push('/host') })
                 .catch(err => { console.log(err) } );
         } else {
             this.setState(() => ({ error: 'A required field is missing' }));
@@ -145,12 +131,14 @@ class ListingForm extends React.Component {
     componentDidMount() {
         const { listing } = this.props;
         if (listing) {
+            this.setState((prevState) => ({ s3ObjectKeysToDelete: [...prevState.s3ObjectKeysToDelete, this.urlToObjectKey(listing.image)] }));
             fetch(listing.image)
                 .then(res => res.blob())
                 .then(res => { this.setState((prevState) => ({ image: { ...prevState.image,  file: res } })) })
                 .catch(err => { console.log(err) });
             if (listing.subImages.length > 0) {
                 for (let imageUrl of listing.subImages) {
+                    this.setState((prevState) => ({ s3ObjectKeysToDelete: [...prevState.s3ObjectKeysToDelete, this.urlToObjectKey(imageUrl)] }));
                     fetch(imageUrl)
                         .then(res => res.blob())
                         .then(res => { this.setState((prevState) => ({ subImages: [...prevState.subImages, { file: res, tag: imageUrl, fromS3: true }] })) })

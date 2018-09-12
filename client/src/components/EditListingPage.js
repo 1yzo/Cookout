@@ -20,6 +20,7 @@ class EditListingPage extends React.Component {
             <div className="page">
                 {listing &&
                 <ListingForm 
+                    history={this.props.history}
                     listing={listing}
                     handleSubmit={(body) => {
                         return new Promise((resolve, reject) => {

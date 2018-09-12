@@ -1,9 +1,10 @@
 import React from 'react';
 import ListingForm from './ListingForm';
 
-const CreateListingPage = () => (
+const CreateListingPage = (props) => (
     <div className="page">
         <ListingForm
+            history={props.history}
             handleSubmit={(body) => {
                 return new Promise((resolve, reject) => {
                     fetch('/listings', {
