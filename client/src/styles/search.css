@@ -3,7 +3,6 @@
     width: 100%;
     margin-top: 8rem;
     background: white;
-    /* z-index: 2; */
 }
 
 .search-page__form {
@@ -34,6 +33,20 @@
     border-radius: 5px;
     padding: 1rem;
     cursor: pointer;
+    position: relative;
+}
+
+.filter__tooltip {
+    position: absolute;
+    bottom: -5px;
+    transform: translate(0, 100%);
+    min-width: 100px;
+    min-height: 100px;
+    background: white;
+    box-shadow: 0 1px 5px #ccbdbd;
+    border-radius: 5px;
+    padding: 1rem;
+    cursor: default;
 }
 
 .address-tag {

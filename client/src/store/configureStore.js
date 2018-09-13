@@ -5,13 +5,15 @@ import thunk from 'redux-thunk';
 import authReducer from '../reducers/auth';
 import userReducer from '../reducers/user';
 import searchReducer from '../reducers/search';
+import filtersReducer from '../reducers/filters';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
     auth: authReducer,
     user: userReducer,
-    search: searchReducer
+    search: searchReducer,
+    filters: filtersReducer
 });
 
 const persistConfig = {
