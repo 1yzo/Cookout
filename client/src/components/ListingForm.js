@@ -193,7 +193,6 @@ class ListingForm extends React.Component {
                         placeholder="Max Occupancy"
                     />
                 </div>
-
                 <textarea value={this.state.description} onChange={this.handleDescriptionChange} placeholder="Description" />
                 <input id="subImagesInput" type="file" onChange={this.handleSubImagesChange} />
                 <div className="sub-images-title">

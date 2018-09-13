@@ -11,6 +11,8 @@ import PrivateRoute from './PrivateRoute';
 import SearchPage from '../components/SearchPage';
 import ViewListingPage from '../components/ViewListingPage';
 
+import '../styles/search.css';
+
 class AppRouter extends React.Component {
     render() {
         return (

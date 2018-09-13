@@ -47,6 +47,7 @@
     font-size: 5rem;
     background: #eee;
     cursor: pointer;
+    margin-bottom: 4rem;
 }
 
 .image-container img {
@@ -57,12 +58,15 @@
 .location-search-input, .host-input {
 	padding: 1rem;
 	border-radius: 5px;
-    margin: 5rem 2rem 5rem 0;
 	min-width: 36rem;
 	box-shadow: 0 1px 7px #ccbdbd;
 	border: none;
 	font-size: 2rem;
 	color: #445044;
+}
+
+.host-input {
+    margin: 2rem 2rem 2rem 0;
 }
 
 .sub-images-title {

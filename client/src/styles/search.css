@@ -1,0 +1,41 @@
+.search-section {
+    position: fixed;
+    width: 100%;
+    margin-top: 8rem;
+    background: white;
+    /* z-index: 2; */
+}
+
+.search-page__form {
+    padding: 0 5rem;
+    display: flex;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.search-page__form button {
+    height: 43px;
+    position: absolute;
+    left: 420px;
+}
+
+.filters-bar {
+    padding: 0 5rem;
+    display: flex;
+    align-items: center;
+    height: 7rem;
+    border-top: 3px solid #eee;
+    border-bottom: 3px solid #eee;
+}
+
+.filter {
+    margin-right: 3rem;
+    border: 2px solid #eee;
+    border-radius: 5px;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.address-tag {
+    padding: 0 5rem;
+}

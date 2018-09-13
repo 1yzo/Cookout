@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import LocationSearchInput from './LocationSearchInput';
 import { setSearch } from '../actions/search';
+import FiltersBar from './FiltersBar';
 
 class SearchPage extends React.Component {
     state = {
@@ -43,27 +44,32 @@ class SearchPage extends React.Component {
     
     render() {
         return (
-            <div className="page">
-                <form onSubmit={this.handleNewLocationSubmit}>
-                    <LocationSearchInput
-                        handleAddressChange={this.handleAddressChange}
-                        address={this.state.address} 
-                        setLocation={this.setLocation}
-                    />
-                    <button>Search</button>
-                </form>
-                <h2>Showing results near {this.props.address}</h2>
-                {this.state.listings.map((listing) => (
-                    <Link key={listing._id} to={`/view-listing/${listing._id}`}>
-                        <div className="listing-card">
-                            <img src={listing.image} alt="main"/>
-                            <div>
-                                <h3>{listing.address}</h3>
-                                <h3>Description: {listing.description}</h3>
+            <div>
+                <div className="search-section">
+                    <form className="search-page__form" onSubmit={this.handleNewLocationSubmit}>
+                        <LocationSearchInput
+                            handleAddressChange={this.handleAddressChange}
+                            address={this.state.address} 
+                            setLocation={this.setLocation}
+                        />
+                        <button>Search</button>
+                    </form>
+                    <FiltersBar />
+                    <h2 className="address-tag">Showing results near {this.props.address}</h2>
+                </div>
+                <div className="page page--search-page">
+                    {this.state.listings.map((listing) => (
+                        <Link key={listing._id} to={`/view-listing/${listing._id}`}>
+                            <div className="listing-card">
+                                <img src={listing.image} alt="main"/>
+                                <div>
+                                    <h3>{listing.address}</h3>
+                                    <h3>Description: {listing.description}</h3>
+                                </div>
                             </div>
-                        </div>
-                    </Link>
-                ))}
+                        </Link>
+                    ))}
+                </div>
             </div>
         );
     }
