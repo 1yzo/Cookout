@@ -4,12 +4,14 @@ import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
 import authReducer from '../reducers/auth';
 import userReducer from '../reducers/user';
+import searchReducer from '../reducers/search';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    user: userReducer
+    user: userReducer,
+    search: searchReducer
 });
 
 const persistConfig = {

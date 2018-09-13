@@ -8,15 +8,10 @@ import CreateListingPage from '../components/CreateListingPage';
 import EditListingPage from '../components/EditListingPage';
 import { startSetUser } from '../actions/user';
 import PrivateRoute from './PrivateRoute';
+import SearchPage from '../components/SearchPage';
+import ViewListingPage from '../components/ViewListingPage';
 
 class AppRouter extends React.Component {
-    // componentDidMount() {
-    //     const { tokenExists, startSetUser } = this.props;
-    //     if (tokenExists) {
-    //         startSetUser();
-    //     }
-    // }
-    
     render() {
         return (
             <BrowserRouter>
@@ -24,6 +19,8 @@ class AppRouter extends React.Component {
                     <Header />
                     <Switch>
                         <Route path="/" component={LandingPage} exact />
+                        <Route path="/search" component={SearchPage} />
+                        <Route path="/view-listing/:listingId" component={ViewListingPage} />
                         <PrivateRoute path="/host" component={HostPage} />
                         <PrivateRoute path="/create-listing" component={CreateListingPage} />
                         <PrivateRoute path="/edit-listing/:listingId" component={EditListingPage} />

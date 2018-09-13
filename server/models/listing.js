@@ -6,7 +6,7 @@ listingSchema = new Schema({
     badges: [ String ],
     image: String,
     address: String,
-    location: { lat: Number, lng: Number },
+    location: { type: [Number], index: '2dsphere' },
     price: Number, 
     occupancy: Number,
     description: String,

@@ -26,25 +26,37 @@ const upload = multer({
 });
 
 router.get('/', (req, res) => {
-    Listing.find()
-        .then((listings) => res.json(listings))
-        .catch((err) => res.status(500).send(err));
+    const lat = Number(req.query.lat);
+    const lng = Number(req.query.lng);
+    const range = Number(req.query.range) * 1609.344; // miles to meters
+    Listing.find({ location: {
+        $nearSphere: {
+            $geometry: {
+                type: "Point",
+                coordinates: [lng, lat]
+            },
+            $maxDistance: range
+        }
+    }})
+        .then(listings =>  res.json(listings))
+        .catch(err =>  res.status(500).send(err));
 });
 
 router.get('/:listingId', (req, res) => {
     const id = req.params.listingId;
     Listing.findById(id)
         .then((listing) => res.json(listing))
-        .catch(err => res.status(500).send(500));
+        .catch(err => res.status(500).send(err));
 });
 
 router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'subImages[]', maxCount: 10 }]), (req, res) => {
     const details = req.body;
     const image = req.files['image'][0];
     const subImages = req.files['subImages[]'];
+    const location = JSON.parse(details.location);
     const listing = new Listing({ 
         ...details,
-        location: JSON.parse(details.location),
+        location: [location.lng, location.lat],
         badges: JSON.parse(details.badges),
         hours: JSON.parse(details.hours),
         image: image.location,
@@ -64,6 +76,7 @@ router.put('/:listingId', upload.fields([{ name: 'image', maxCount: 1 }, { name:
     const details = req.body;
     const image = req.files['image'][0];
     const subImages = req.files['subImages[]'];
+    const location = JSON.parse(details.location);
     const s3ObjectKeysToDelete = JSON.parse(details.s3ObjectKeysToDelete);
     if (s3ObjectKeysToDelete.length > 0) {
         const params = {
@@ -78,7 +91,7 @@ router.put('/:listingId', upload.fields([{ name: 'image', maxCount: 1 }, { name:
             } else {
                 Listing.findByIdAndUpdate(req.params.listingId, { 
                     ...details,
-                    location: JSON.parse(details.location),
+                    location: [location.lng, location.lat],
                     badges: JSON.parse(details.badges),
                     hours: JSON.parse(details.hours),
                     image: image.location,
@@ -91,7 +104,7 @@ router.put('/:listingId', upload.fields([{ name: 'image', maxCount: 1 }, { name:
     } else {
         Listing.findByIdAndUpdate(req.params.listingId, { 
             ...details,
-            location: JSON.parse(details.location),
+            location: [location.lng, location.lat],
             badges: JSON.parse(details.badges),
             hours: JSON.parse(details.hours),
             image: image.location,
