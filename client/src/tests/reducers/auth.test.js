@@ -30,4 +30,4 @@ describe('Auth reducer', () => {
             error: ''
         });
     });
-});
+}); 
