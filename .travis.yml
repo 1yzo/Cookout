@@ -1,5 +1,5 @@
 language: node_js
 script:
-  cd client
-  npm run build
-  npm test
+  - cd client
+  - npm run build
+  - npm test
