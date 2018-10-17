@@ -10,7 +10,7 @@
     "start": "node ./server/index.js",
     "dev": "nodemon ./server/index.js",
     "heroku-postbuild": "cd client && npm install && npm run build",
-    "test": "cd client && npm test"
+    "test": "cd client && npm install && npm run build && npm test"
   },
   "dependencies": {
     "aws-sdk": "^2.308.0",
