@@ -9,6 +9,11 @@ export const removeAuthToken = () => ({
     type: 'REMOVE_AUTH_TOKEN'
 });
 
+export const setAuthError = (error) => ({
+    type: 'SET_AUTH_ERROR',
+    error
+});
+
 export const startSignup = (email, password, name) => {
     return (dispatch) => {
         return fetch('/auth/signup', {
@@ -48,9 +53,4 @@ export const startLogin = (email, password) => {
             })
             .catch((err) => dispatch(setAuthError(err.toString())));
     };
-}
-
-export const setAuthError = (error) => ({
-    type: 'SET_AUTH_ERROR',
-    error
-});
+};

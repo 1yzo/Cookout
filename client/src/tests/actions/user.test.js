@@ -41,7 +41,11 @@ describe('user actions', () => {
         const user = { id: 'user1' };
         fetchMock.get('/auth/getUser', user);
         const expectedActions = [actions.setUser(user)];
-        const initialState = {};
+        const initialState = {
+            auth: {
+                token
+            }
+        };
         const store = mockStore(initialState);
         store.dispatch(actions.startSetUser(token))
             .then(() => {

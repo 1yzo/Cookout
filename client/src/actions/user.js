@@ -7,14 +7,15 @@ export const removeUser = () => ({
     type: 'REMOVE_USER'
 });
 
-export const startSetUser = (token) => {
-    return (dispatch) => {
+export const startSetUser = () => {
+    return (dispatch, getState) => {
+        const { token } = getState().auth;
         return fetch('/auth/getUser', {
             method: 'GET',
             headers: { 'Authorization': token }
         })
             .then((res) => res.json())
-            .then((user) => dispatch(setUser(user)))
+            .then((user) => { dispatch(setUser(user)) })
             .catch((err) => console.log(err));
     };
 };

@@ -8,7 +8,7 @@ export const setOccupancyFilter = (occupancy) => ({
     occupancy
 });
 
-export const setPriceFilter = (direction) => ({
+export const setPriceFilter = (price) => ({
     type: 'SET_PRICE_FILTER',
-    direction
+    price
 });
