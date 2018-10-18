@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { startSetUser } from '../actions/user';
 import AppRouter from '../routers/AppRouter';
 
+// If a persisted token exists then load the user and then render AppRouter
 class App extends React.Component {
     state = {
         isLoaded: this.props.token ? false : true
@@ -19,7 +20,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    token: state.auth.token
+    token: state.auth.token,
 });
 
 export default connect(mapStateToProps)(App);
