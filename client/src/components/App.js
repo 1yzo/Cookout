@@ -4,7 +4,7 @@ import { startSetUser } from '../actions/user';
 import AppRouter from '../routers/AppRouter';
 
 // If a persisted token exists then load the user and then render AppRouter
-class App extends React.Component {
+export class App extends React.Component {
     state = {
         isLoaded: this.props.token ? false : true
     };
@@ -13,7 +13,7 @@ class App extends React.Component {
         if (this.state.isLoaded) {
             return <AppRouter />
         } else {
-            this.props.dispatch(startSetUser()).then(() => this.setState(() => ({ isLoaded: true })));
+            this.props.startSetUser().then(() => this.setState(() => ({ isLoaded: true })));
             return <div>Loading...</div>
         }
     }
@@ -23,4 +23,8 @@ const mapStateToProps = (state) => ({
     token: state.auth.token,
 });
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = (dispatch) => ({
+    startSetUser: () => dispatch(startSetUser())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

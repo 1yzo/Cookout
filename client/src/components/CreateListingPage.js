@@ -6,14 +6,10 @@ const CreateListingPage = (props) => (
         <ListingForm
             history={props.history}
             handleSubmit={(body) => {
-                return new Promise((resolve, reject) => {
-                    fetch('/listings', {
-                        method: 'POST',
-                        body
-                    })
-                        .then((res) => { resolve(res) })
-                        .catch((err) => { reject(err) });
-                });
+                return fetch('/listings', {
+                    method: 'POST',
+                    body
+                });   
             }}
          />
     </div>
