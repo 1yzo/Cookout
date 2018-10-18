@@ -25,5 +25,15 @@
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:3001",
-  "devDependencies": {}
+  "devDependencies": {
+    "fetch-mock": "^7.1.0",
+    "node-fetch": "^2.2.0",
+    "redux-mock-store": "^1.5.3"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

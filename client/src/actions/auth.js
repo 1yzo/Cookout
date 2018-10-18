@@ -44,7 +44,7 @@ export const startLogin = (email, password) => {
             })
             .then((token) => {
                 dispatch(setAuthToken(token));
-                dispatch(startSetUser());
+                dispatch(startSetUser(token));
             })
             .catch((err) => dispatch(setAuthError(err.toString())));
     };
