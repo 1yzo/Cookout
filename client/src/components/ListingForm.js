@@ -6,14 +6,14 @@ import TimeSelect from './TimeSelect';
 
 import '../styles/host-form.css';
  
-class ListingForm extends React.Component {
+export class ListingForm extends React.Component {
     state = {
         badges: this.props.listing ? this.props.listing.badges : [],
         image: this.props.listing ? { file: null, tag: this.props.listing.image } : undefined,
         address: this.props.listing ? this.props.listing.address : '',
         location: this.props.listing ? this.props.listing.location : {},
         price: this.props.listing ? (this.props.listing.price / 100).toString() : '',
-        occupancy: this.props.listing ? this.props.listing.occupancy.toString() : undefined,
+        occupancy: this.props.listing ? this.props.listing.occupancy.toString() : '',
         description: this.props.listing ? this.props.listing.description : '',
         subImages: [],
         hours: this.props.listing ? this.props.listing.hours : { open: 0, close: 0 },
